@@ -7,4 +7,14 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          recharts: ["recharts"],
+          "tanstack": ["@tanstack/react-query", "@tanstack/react-router"],
+        },
+      },
+    },
+  },
 });

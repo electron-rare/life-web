@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", "Manrope", system-ui, sans-serif;
+  background: radial-gradient(circle at 10% 10%, #1f2937 0%, #020617 50%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-bg {
+  background:
+    radial-gradient(80rem 80rem at 100% -10%, rgba(15, 118, 110, 0.22), transparent 45%),
+    radial-gradient(40rem 40rem at -10% 30%, rgba(249, 115, 22, 0.15), transparent 45%),
+    #020617;
+}
+
+.eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 118, 110, 0.4);
+  background: rgba(15, 118, 110, 0.12);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #14b8a6;
+}
+
+.nav-link {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.55);
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+  border-color: rgba(20, 184, 166, 0.65);
+  transform: translateY(-1px);
+}
+
+.nav-link-active {
+  border-color: rgba(20, 184, 166, 0.7);
+  background: rgba(15, 118, 110, 0.2);
+  color: #f8fafc;
+}
+
+.grid-cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.card {
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.65);
+  padding: 1rem;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.card p {
+  margin: 0.45rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.input,
+.textarea,
+.button {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.7);
+  color: #f8fafc;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+}
+
+.textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.button {
+  width: fit-content;
+  border-color: rgba(20, 184, 166, 0.6);
+  background: linear-gradient(110deg, rgba(15, 118, 110, 0.9), rgba(13, 148, 136, 0.85));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.muted {
+  color: #94a3b8;
+}

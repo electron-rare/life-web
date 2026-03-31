@@ -13,6 +13,10 @@ export const api = {
   health: () => request<{ status: string; providers: string[]; cache_available: boolean }>("/health"),
   stats: () => request<Record<string, unknown>>("/stats"),
   models: () => request<{ models: string[] }>("/models"),
+  modelCatalog: () => request<{
+    models: { id: string; name: string; provider: string; domain: string; description: string; size: string; location: string }[];
+    domains: Record<string, string>;
+  }>("/models/catalog"),
   providers: () => request<{ providers: string[] }>("/providers"),
   chat: (body: { messages: { role: string; content: string }[]; model?: string; provider?: string; conversation_id?: string }) =>
     request<{ content: string; model: string; provider: string; usage: Record<string, number>; conversation_id?: string }>("/chat", {

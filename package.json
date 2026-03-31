@@ -15,8 +15,10 @@
   "dependencies": {
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-router": "^1.104.1",
+    "lucide-react": "^1.7.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

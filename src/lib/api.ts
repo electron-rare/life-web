@@ -76,4 +76,12 @@ export const api = {
     recent: (service?: string, limit?: number) =>
       request<Record<string, unknown>>(`/traces/recent?service=${service || "life-core"}&limit=${limit || 20}`),
   },
+
+  // CAD gateway (cad.saillant.cc)
+  cad: {
+    health: () => fetch("https://cad.saillant.cc/health").then(r => r.json()),
+    tools: () => fetch("https://cad.saillant.cc/tools").then(r => r.json()),
+    projects: () => fetch("https://cad.saillant.cc/projects").then(r => r.json()),
+    drc: (path?: string) => fetch(`https://cad.saillant.cc/kicad/drc${path ? `?project_path=${path}` : ""}`).then(r => r.json()),
+  },
 };

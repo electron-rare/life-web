@@ -1,43 +1,44 @@
 # life-web
 
-Front-end principal FineFab pour cockpit produit et parcours utilisateur.
+FineFab operator cockpit -- product workflows, real-time monitoring, and dashboard UI.
 
-## Role
-- Offrir l'interface web unifiee des services FineFab.
-- Consommer l'API `life-reborn`.
-- Exposer dashboards, workflows et operations metier.
+Part of the [FineFab](https://github.com/L-electron-Rare) platform.
 
-## Stack
-- TypeScript
-- Vite
-- React 19
-- pnpm
+## What it does
 
-## Structure cible
-- `src/pages/`: pages et parcours
-- `src/components/`: UI partagee
-- `src/api/`: clients API et adaptateurs
+- Provides a unified web interface for all FineFab services
+- Displays real-time monitoring dashboards for manufacturing and AI pipelines
+- Manages product workflows and operator actions
+- Consumes the `life-reborn` API gateway for all backend operations
 
-## Demarrage rapide
+## Tech stack
+
+TypeScript / Vite / React 19 / pnpm
+
+## Quick start
+
 ```bash
-pnpm install
-pnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm devpnpm cible
-- `gateway/`: backend CAD/API
-- `web/`: UI CAD collaborative
-- `tools/`: integrations plugin/outillage
-
-## Demarrage rapide
-```bash
-# backend
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
-
-# frontend
 pnpm install
 pnpm dev
 ```
 
-## Roadmap immediate
-- Migrer les routes CAD prioritaires.
-- Integrer plugin KiCad et KiCanvas.
-- Stabiliser tests E2E collaboration.
+## Project structure
+
+```
+src/pages/        # Pages and user flows
+src/components/   # Shared UI components
+src/api/          # API clients and adapters
+```
+
+## Related repos
+
+| Repo | Role |
+|------|------|
+| [life-reborn](https://github.com/L-electron-Rare/life-reborn) | API gateway (auth, rate limiting, OpenAPI) |
+| [life-core](https://github.com/L-electron-Rare/life-core) | AI backend engine |
+| [life-spec](https://github.com/L-electron-Rare/life-spec) | Functional specifications and BMAD gates |
+| [finefab-shared](https://github.com/L-electron-Rare/finefab-shared) | Shared contracts and types |
+
+## License
+
+[MIT](LICENSE)

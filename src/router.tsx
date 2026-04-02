@@ -19,6 +19,7 @@ const TracesMetrics = lazy(() => import("./pages/traces/TracesMetrics").then(m =
 const InfraContainers = lazy(() => import("./pages/infra/InfraContainers").then(m => ({ default: m.InfraContainers })));
 const InfraNetwork = lazy(() => import("./pages/infra/InfraNetwork").then(m => ({ default: m.InfraNetwork })));
 const InfraStorage = lazy(() => import("./pages/infra/InfraStorage").then(m => ({ default: m.InfraStorage })));
+const GovernancePage = lazy(() => import("./pages/GovernancePage").then(m => ({ default: m.GovernancePage })));
 
 const suspenseFallback = (
   <div className="flex h-full items-center justify-center">
@@ -110,6 +111,12 @@ const infraIndex = createRoute({getParentRoute:()=>infraLayout,path:"/",componen
 const infraNetwork = createRoute({getParentRoute:()=>infraLayout,path:"/network",component:InfraNetwork});
 const infraStorage = createRoute({getParentRoute:()=>infraLayout,path:"/storage",component:InfraStorage});
 
+// Governance
+function GovernanceLayout() {
+  return <Suspense fallback={suspenseFallback}><GovernancePage /></Suspense>;
+}
+const governanceRoute = createRoute({getParentRoute:()=>rootRoute,path:"/governance",component:GovernanceLayout});
+
 const routeTree = rootRoute.addChildren([
   dashboardLayout.addChildren([dashboardIndex,dashboardMetrics,dashboardLogs]),
   chatLayout.addChildren([chatIndex,chatConversations]),
@@ -117,6 +124,7 @@ const routeTree = rootRoute.addChildren([
   ragLayout.addChildren([ragIndex,ragSearch,ragStats]),
   tracesLayout.addChildren([tracesIndex,tracesMetrics]),
   infraLayout.addChildren([infraIndex,infraNetwork,infraStorage]),
+  governanceRoute,
 ]);
 
 export const router = createRouter({ routeTree });

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, MessageSquare, Zap, BookOpen, Activity, Server } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Zap, BookOpen, Activity, Server, ShieldCheck } from "lucide-react";
 import { type ReactNode } from "react";
 
 interface NavItem { to: string; icon: ReactNode; label: string; }
@@ -11,6 +11,7 @@ const navItems: NavItem[] = [
   { to: "/rag", icon: <BookOpen size={20} />, label: "RAG" },
   { to: "/traces", icon: <Activity size={20} />, label: "Traces" },
   { to: "/infra", icon: <Server size={20} />, label: "Infra" },
+  { to: "/governance", icon: <ShieldCheck size={20} />, label: "Governance" },
 ];
 
 export function Sidebar() {

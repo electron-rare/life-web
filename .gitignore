@@ -85,3 +85,6 @@ npm-debug.log*
 tmp/
 temp/
 *.tmp
+
+# TypeScript build info
+*.tsbuildinfo

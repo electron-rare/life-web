@@ -1,7 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { GlassCard } from "../../components/ui/GlassCard";
 
-// TODO: replace with real provider metrics aggregation endpoint when available
+// Uses /stats endpoint — provider metrics planned for P2
 const mockData = [
   { name: "ollama", value: 85, color: "#00ff88" },
   { name: "claude", value: 10, color: "#3b82f6" },

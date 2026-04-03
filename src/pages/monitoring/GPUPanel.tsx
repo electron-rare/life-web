@@ -34,7 +34,7 @@ export function GPUPanel() {
               <RadialBarChart innerRadius="55%" outerRadius="100%"
                 data={[{ value: vramPct, fill: vramColor }]} startAngle={90} endAngle={-270}>
                 <RadialBar dataKey="value" cornerRadius={4} background={{ fill: "#1e2030" }} />
-                <Tooltip formatter={(v: number) => `${v.toFixed(1)}%`} />
+                <Tooltip formatter={(v) => `${Number(v).toFixed(1)}%`} />
               </RadialBarChart>
             </ResponsiveContainer>
           </div>
@@ -66,7 +66,7 @@ export function GPUPanel() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={sparkData}>
                     <Line type="monotone" dataKey="v" stroke="#22c55e" dot={false} strokeWidth={1.5} />
-                    <Tooltip formatter={(v: number) => `${v.toFixed(0)} tok/s`} />
+                    <Tooltip formatter={(v) => `${Number(v).toFixed(0)} tok/s`} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>

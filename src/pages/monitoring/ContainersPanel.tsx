@@ -3,9 +3,11 @@ import { api } from "../../lib/api";
 import { StatusDot } from "../../components/ui/StatusDot";
 
 type Container = {
-  name: string; image: string; status: string; health: string;
-  cpu_percent: number; memory_mb: number; memory_limit_mb: number;
-  uptime_hours: number; error?: string;
+  name: string; status: string;
+  image?: string; health?: string;
+  cpu_percent?: number; cpu?: string;
+  memory_mb?: number; memory?: string; memory_limit_mb?: number;
+  uptime_hours?: number; error?: string;
 };
 
 function healthStatus(c: Container): "healthy" | "unhealthy" | "unknown" {
@@ -47,13 +49,13 @@ export function ContainersPanel() {
             {rows.map((c) => (
               <tr key={c.name} className="border-b border-border-glass/30 py-1.5">
                 <td className="py-1.5 font-mono text-text-primary">{c.name}</td>
-                <td className="py-1.5 text-right font-mono text-accent-blue">{c.cpu_percent.toFixed(2)}%</td>
-                <td className="py-1.5 text-right font-mono text-accent-amber">{c.memory_mb.toFixed(0)} MB</td>
+                <td className="py-1.5 text-right font-mono text-accent-blue">{c.cpu_percent != null ? `${c.cpu_percent.toFixed(2)}%` : c.cpu ?? "—"}</td>
+                <td className="py-1.5 text-right font-mono text-accent-amber">{c.memory_mb != null ? `${c.memory_mb.toFixed(0)} MB` : c.memory ?? "—"}</td>
                 <td className="py-1.5 text-right text-text-muted">
-                  {c.uptime_hours < 1 ? `${Math.round(c.uptime_hours * 60)}m` : `${Math.floor(c.uptime_hours)}h`}
+                  {c.uptime_hours != null ? (c.uptime_hours < 1 ? `${Math.round(c.uptime_hours * 60)}m` : `${Math.floor(c.uptime_hours)}h`) : "—"}
                 </td>
                 <td className="py-1.5 text-center">
-                  <StatusDot status={healthStatus(c)} label={c.health} />
+                  <StatusDot status={healthStatus(c)} label={c.health ?? c.status} />
                 </td>
               </tr>
             ))}

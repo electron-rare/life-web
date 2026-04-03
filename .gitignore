@@ -88,3 +88,10 @@ temp/
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Additional local caches
+.ruff_cache/
+.hypothesis/
+.tox/
+.ipynb_checkpoints/
+.pnpm-store/

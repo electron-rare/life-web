@@ -1,7 +1,17 @@
-const BASE = import.meta.env.VITE_API_URL || "/api";
+import type { AuditReport, AuditStatus } from "../components/governance/types";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://api.saillant.cc";
+
+type ChatUsage = {
+  input_tokens?: number;
+  output_tokens?: number;
+};
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, init);
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    credentials: "include",
+    ...init,
+  });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`${res.status}: ${body}`);
@@ -17,9 +27,9 @@ export const api = {
     models: { id: string; name: string; provider: string; domain: string; description: string; size: string; location: string }[];
     domains: Record<string, string>;
   }>("/models/catalog"),
-  providers: () => request<{ providers: string[] }>("/providers"),
+  providers: () => request<{ providers: string[] }>("/api/providers"),
   chat: (body: { messages: { role: string; content: string }[]; model?: string; provider?: string; conversation_id?: string }) =>
-    request<{ content: string; model: string; provider: string; usage: Record<string, number>; conversation_id?: string }>("/chat", {
+    request<{ content: string; model: string; provider: string; usage?: ChatUsage; conversation_id?: string; trace_id?: string }>("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -79,6 +89,11 @@ export const api = {
     services: () => request<{ data: string[] }>("/traces/services"),
     recent: (service?: string, limit?: number) =>
       request<Record<string, unknown>>(`/traces/recent?service=${service || "life-core"}&limit=${limit || 20}`),
+  },
+
+  audit: {
+    status: () => request<AuditStatus>("/api/audit/status"),
+    report: () => request<AuditReport>("/api/audit/report"),
   },
 
   // CAD gateway (cad.saillant.cc)

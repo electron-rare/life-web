@@ -5,7 +5,7 @@ const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
 // api.ts reads import.meta.env.VITE_API_URL at module load time;
-// with no env var set it falls back to "/api".
+// with no env var set it falls back to the public API host.
 const { api } = await import("../api");
 
 describe("api client", () => {
@@ -22,7 +22,10 @@ describe("api client", () => {
     const result = await api.health();
     expect(result.status).toBe("ok");
     expect(result.providers).toContain("ollama");
-    expect(mockFetch).toHaveBeenCalledWith("/api/health", undefined);
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.saillant.cc/health",
+      expect.objectContaining({ credentials: "include" }),
+    );
   });
 
   it("health throws on non-ok response", async () => {
@@ -43,7 +46,8 @@ describe("api client", () => {
           content: "hello",
           model: "qwen3:4b",
           provider: "ollama",
-          usage: {},
+          usage: { input_tokens: 3, output_tokens: 5 },
+          trace_id: "abc123",
         }),
     });
 
@@ -54,9 +58,12 @@ describe("api client", () => {
     });
 
     expect(result.content).toBe("hello");
+    expect(result.usage?.input_tokens).toBe(3);
+    expect(result.trace_id).toBe("abc123");
     expect(mockFetch).toHaveBeenCalledWith(
-      "/api/chat",
+      "https://api.saillant.cc/api/chat",
       expect.objectContaining({
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
       }),
@@ -102,6 +109,10 @@ describe("api client", () => {
 
     const result = await api.providers();
     expect(result.providers).toContain("openai");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.saillant.cc/api/providers",
+      expect.objectContaining({ credentials: "include" }),
+    );
   });
 
   it("conversations.list returns list", async () => {
@@ -122,6 +133,38 @@ describe("api client", () => {
     mockFetch.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve(undefined) });
 
     await api.conversations.delete("abc");
-    expect(mockFetch).toHaveBeenCalledWith("/api/conversations/abc", { method: "DELETE" });
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://api.saillant.cc/conversations/abc",
+      expect.objectContaining({
+        credentials: "include",
+        method: "DELETE",
+      }),
+    );
+  });
+
+  it("audit routes use the gateway host", async () => {
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ last_run: "2026-04-03T12:00:00Z" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ total_files: 4, results: [] }),
+      });
+
+    await api.audit.status();
+    await api.audit.report();
+
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      1,
+      "https://api.saillant.cc/api/audit/status",
+      expect.objectContaining({ credentials: "include" }),
+    );
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      2,
+      "https://api.saillant.cc/api/audit/report",
+      expect.objectContaining({ credentials: "include" }),
+    );
   });
 });

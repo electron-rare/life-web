@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
+import { api } from "../../../lib/api";
 import type { AuditStatus, AuditReport } from "../types";
 
-const LIFE_CORE_URL = import.meta.env.VITE_LIFE_CORE_URL ?? "http://localhost:8000";
 const POLL_INTERVAL_MS = 30_000;
 
 export interface AuditDataState {
@@ -22,16 +22,9 @@ export function useAuditData(): AuditDataState {
     setLoading(true);
     setError(null);
     try {
-      const [statusRes, reportRes] = await Promise.all([
-        fetch(`${LIFE_CORE_URL}/audit/status`),
-        fetch(`${LIFE_CORE_URL}/audit/report`),
-      ]);
-      if (!statusRes.ok || !reportRes.ok) {
-        throw new Error(`Fetch failed: status=${statusRes.status} report=${reportRes.status}`);
-      }
       const [statusData, reportData] = await Promise.all([
-        statusRes.json() as Promise<AuditStatus>,
-        reportRes.json() as Promise<AuditReport>,
+        api.audit.status(),
+        api.audit.report(),
       ]);
       setStatus(statusData);
       setReport(reportData);

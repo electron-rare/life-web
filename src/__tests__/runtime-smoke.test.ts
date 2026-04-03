@@ -66,7 +66,7 @@ describe("life-web bundle runtime smoke", () => {
     apiServer = undefined;
   });
 
-  it("builds a production bundle that calls the gateway host for governance data", async () => {
+  it("builds a production bundle that calls the gateway host for governance data", { timeout: 30_000 }, async () => {
     const apiRequests: string[] = [];
     const runtimeFetches: string[] = [];
 

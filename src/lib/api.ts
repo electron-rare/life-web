@@ -74,6 +74,8 @@ export const api = {
       form.append("file", file);
       return request<{ id: string; name: string; chunks: number }>("/rag/documents", { method: "POST", body: form });
     },
+    list: () => request<{ documents: { id: string; name: string; chunks: number; metadata: Record<string, unknown> }[] }>("/rag/documents"),
+    delete: (id: string) => request<{ deleted: boolean; id: string }>(`/rag/documents/${id}`, { method: "DELETE" }),
   },
 
   // Infra

@@ -57,7 +57,7 @@ describe("api client", () => {
         Promise.resolve({
           content: "hello",
           model: "qwen3:4b",
-          provider: "ollama",
+          provider: "vllm",
           usage: { input_tokens: 3, output_tokens: 5 },
           trace_id: "abc123",
         }),
@@ -65,7 +65,7 @@ describe("api client", () => {
 
     const result = await api.chat({
       messages: [{ role: "user", content: "hi" }],
-      provider: "ollama",
+      provider: "vllm",
       model: "qwen3:4b",
     });
 
@@ -284,13 +284,13 @@ describe("api client", () => {
             },
             rag_stats: { documents: 26, chunks: 184, vectors: 184, retrieval_mode: "hybrid" },
           },
-          router: { status: { ollama: true, openai: false } },
+          router: { status: { vllm: true, openai: false } },
         }),
     });
 
     const result = await api.stats();
     expect(result.chat_service.requests).toBe(42);
-    expect(result.router.status.ollama).toBe(true);
+    expect(result.router.status.vllm).toBe(true);
   });
 
   it("statsTimeseries returns parsed response", async () => {
@@ -429,15 +429,15 @@ describe("api client", () => {
       ok: true,
       json: () =>
         Promise.resolve({
-          ollama_local: { status: "up", models: 4, url: "http://ollama:11434" },
-          ollama_gpu: { status: "up", models: 33, url: "http://kxkm-ai:11434" },
+          embed_server: { status: "up", models: 4, url: "http://ollama:11434" },
+          llm_local: { status: "up", models: 33, url: "http://kxkm-ai:11434" },
           vllm_gpu: { status: "down", error: "timeout" },
           jaeger: { status: "up" },
         }),
     });
 
     const result = await api.infra.network();
-    expect(result.ollama_local?.models).toBe(4);
+    expect(result.embed_server?.models).toBe(4);
     expect(result.vllm_gpu?.status).toBe("down");
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.saillant.cc/infra/network",
@@ -529,7 +529,7 @@ describe("api client", () => {
       ok: true,
       json: () =>
         Promise.resolve({
-          conversations: [{ id: "abc", title: "Test", created_at: "2026-01-01", provider: "ollama", message_count: 3 }],
+          conversations: [{ id: "abc", title: "Test", created_at: "2026-01-01", provider: "vllm", message_count: 3 }],
         }),
     });
 
@@ -545,7 +545,7 @@ describe("api client", () => {
         Promise.resolve({
           id: "abc",
           title: "Test",
-          provider: "ollama",
+          provider: "vllm",
           created_at: "2026-01-01",
           messages: [{ role: "user", content: "Salut" }],
         }),
@@ -566,13 +566,13 @@ describe("api client", () => {
         Promise.resolve({
           id: "abc",
           title: "Nouvelle conversation",
-          provider: "ollama",
+          provider: "vllm",
           created_at: "2026-01-01",
           messages: [],
         }),
     });
 
-    const result = await api.conversations.create({ title: "Nouvelle conversation", provider: "ollama" });
+    const result = await api.conversations.create({ title: "Nouvelle conversation", provider: "vllm" });
     expect(result.id).toBe("abc");
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.saillant.cc/conversations",

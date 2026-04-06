@@ -1,7 +1,7 @@
 import { UserManager, WebStorageStateStore, type User } from "oidc-client-ts";
 
 const KEYCLOAK_URL = import.meta.env.VITE_KEYCLOAK_URL || "https://auth.saillant.cc";
-const REALM = import.meta.env.VITE_KEYCLOAK_REALM || "electron_rare";
+const REALM = import.meta.env.VITE_KEYCLOAK_REALM || "electro_life";
 const CLIENT_ID = import.meta.env.VITE_KEYCLOAK_CLIENT_ID || "life-web";
 const REDIRECT_URI = `${window.location.origin}/`;
 const AUTHORITY = `${KEYCLOAK_URL}/realms/${REALM}`;

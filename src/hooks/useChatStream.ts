@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { getAccessToken } from "../lib/auth";
 
 export interface Message {
   role: "user" | "assistant";
@@ -16,9 +17,14 @@ export function useChatStream(apiBase: string) {
       setStreaming(true);
 
       try {
+        const token = await getAccessToken();
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         const res = await fetch(`${apiBase}/chat/stream`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          headers,
           body: JSON.stringify({
             messages: [...messages, userMsg],
             model,

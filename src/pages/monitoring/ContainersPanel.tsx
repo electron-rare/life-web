@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { StatusDot } from "../../components/ui/StatusDot";
+import { StatusDot } from "@finefab/ui";
 import type { GetInfraContainers200ContainersItem } from "../../generated/gateway-types";
 
 function healthStatus(c: GetInfraContainers200ContainersItem): "healthy" | "unhealthy" | "unknown" {

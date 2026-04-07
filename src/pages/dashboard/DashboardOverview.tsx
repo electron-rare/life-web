@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { MetricCard } from "../../components/ui/MetricCard";
-import { Terminal } from "../../components/ui/Terminal";
-import { StatusDot } from "../../components/ui/StatusDot";
+import { MetricCard, Terminal, StatusDot } from "@finefab/ui";
 import { useHealth } from "../../hooks/useHealth";
 import { useStats } from "../../hooks/useStats";
 import { api } from "../../lib/api";

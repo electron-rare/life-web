@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { GlassCard } from "../../components/ui/GlassCard";
-import { StatusDot } from "../../components/ui/StatusDot";
+import { GlassCard, StatusDot } from "@finefab/ui";
 
 export function ProvidersStatus() {
   const health = useQuery({ queryKey: ["health"], queryFn: api.health, refetchInterval: 10_000 });

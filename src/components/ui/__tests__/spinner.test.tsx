@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Spinner } from "../Spinner";
+import { Spinner } from "@finefab/ui";
 
 describe("Spinner", () => {
   it("renders default text", () => {

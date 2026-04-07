@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { GlassCard } from "../../components/ui/GlassCard";
+import { GlassCard } from "@finefab/ui";
 
 // Uses /stats endpoint — provider metrics planned for P2
 const mockData = [

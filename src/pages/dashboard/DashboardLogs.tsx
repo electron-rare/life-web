@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Terminal } from "../../components/ui/Terminal";
+import { Terminal } from "@finefab/ui";
 import { api } from "../../lib/api";
 
 export function DashboardLogs() {

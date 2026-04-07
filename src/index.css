@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import "@finefab/ui/tokens.css";
 
 @tailwind base;
 @tailwind components;
@@ -8,21 +9,5 @@
   body {
     @apply bg-surface-bg text-text-primary antialiased;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-}
-
-@layer components {
-  .glass-card {
-    @apply rounded-xl border border-border-glass p-4;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px);
-  }
-  .glass-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-  .terminal-box {
-    @apply rounded-lg border border-border-glass p-3 font-mono text-xs;
-    background: rgba(0, 0, 0, 0.4);
   }
 }

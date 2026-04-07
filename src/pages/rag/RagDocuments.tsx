@@ -1,8 +1,7 @@
 import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { GlassCard } from "../../components/ui/GlassCard";
-import { MetricCard } from "../../components/ui/MetricCard";
+import { GlassCard, MetricCard } from "@finefab/ui";
 
 export function RagDocuments() {
   const qc = useQueryClient();

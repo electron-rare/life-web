@@ -1,7 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "../AuthProvider";
-import { Spinner } from "../ui/Spinner";
+import { Spinner } from "@finefab/ui";
 
 export function AppShell() {
   const { isAuthenticated, isLoading, login } = useAuth();

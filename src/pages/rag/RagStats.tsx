@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { MetricCard } from "../../components/ui/MetricCard";
+import { MetricCard } from "@finefab/ui";
 
 export function RagStats() {
   const stats = useQuery({ queryKey: ["rag-stats"], queryFn: api.rag.stats, refetchInterval: 10_000 });

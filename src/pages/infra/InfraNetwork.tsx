@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { GlassCard } from "../../components/ui/GlassCard";
-import { StatusDot } from "../../components/ui/StatusDot";
+import { GlassCard, StatusDot } from "@finefab/ui";
 import type { GetInfraNetwork200Jaeger, GetInfraNetwork200OllamaGpu, GetInfraNetwork200OllamaLocal, GetInfraNetwork200VllmGpu } from "../../generated/gateway-types";
 
 function toStatus(value?: string): "healthy" | "unhealthy" | "unknown" {

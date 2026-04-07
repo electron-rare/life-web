@@ -1,4 +1,4 @@
-import { MetricCard } from "../../components/ui/MetricCard";
+import { MetricCard } from "@finefab/ui";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import type { GetInfraStorage200Qdrant, GetInfraStorage200Redis } from "../../generated/gateway-types";

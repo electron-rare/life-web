@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { GlassCard } from "../GlassCard";
-import { StatusDot } from "../StatusDot";
-import { MetricCard } from "../MetricCard";
+import { GlassCard, StatusDot, MetricCard } from "@finefab/ui";
 
 describe("GlassCard", () => {
   it("renders children", () => {

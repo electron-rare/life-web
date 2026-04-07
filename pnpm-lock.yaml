@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@finefab/ui':
+        specifier: file:../finefab-ui
+        version: file:../finefab-ui(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.66.0
         version: 5.96.2(react@19.2.4)
@@ -522,6 +525,12 @@ packages:
     peerDependenciesMeta:
       '@noble/hashes':
         optional: true
+
+  '@finefab/ui@file:../finefab-ui':
+    resolution: {directory: ../finefab-ui, type: directory}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -2265,6 +2274,12 @@ snapshots:
     optional: true
 
   '@exodus/bytes@1.15.0': {}
+
+  '@finefab/ui@file:../finefab-ui(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      lucide-react: 1.7.0(react@19.2.4)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

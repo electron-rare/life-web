@@ -13,6 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@finefab/ui": "file:../finefab-ui",
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-router": "^1.104.1",
     "lucide-react": "^1.7.0",

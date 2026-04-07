@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Upload, Link2, X, FileCode2, Cpu } from "lucide-react";
-import { GlassCard } from "../../components/ui/GlassCard";
+import { GlassCard } from "@finefab/ui";
 
 const CAD_GATEWAY_URL = import.meta.env.VITE_CAD_URL || "https://cad.saillant.cc";
 

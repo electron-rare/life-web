@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { GlassCard } from "../../components/ui/GlassCard";
+import { GlassCard } from "@finefab/ui";
 import { useChatStream, type Message } from "../../hooks/useChatStream";
 import { api } from "../../lib/api";
 import type { GetModelsCatalog200ModelsItem } from "../../generated/gateway-types";

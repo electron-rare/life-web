@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { GlassCard } from "../../components/ui/GlassCard";
-import { Terminal } from "../../components/ui/Terminal";
+import { GlassCard, Terminal } from "@finefab/ui";
 import type { GetTracesRecent200DataItem } from "../../generated/gateway-types";
 
 type LogLevel = "INFO" | "WARN" | "ERROR";

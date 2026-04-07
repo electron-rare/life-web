@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GlassCard } from "../../components/ui/GlassCard";
+import { GlassCard } from "@finefab/ui";
 
 export function ProvidersBenchmark() {
   const [prompt] = useState("Dis bonjour en une phrase");

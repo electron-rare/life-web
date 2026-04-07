@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { GlassCard } from "../../components/ui/GlassCard";
+import { GlassCard } from "@finefab/ui";
 
 export function ProvidersConfig() {
   const health = useQuery({ queryKey: ["health"], queryFn: api.health });

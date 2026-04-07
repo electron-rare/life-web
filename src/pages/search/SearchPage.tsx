@@ -8,8 +8,7 @@ import {
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../lib/api";
-import { GlassCard } from "../../components/ui/GlassCard";
-import { Spinner } from "../../components/ui/Spinner";
+import { GlassCard, Spinner } from "@finefab/ui";
 
 type SearchResult = Awaited<ReturnType<typeof api.search>>["results"][number];
 type CollectionFilter = "all" | "nextcloud_docs" | "life_chunks";

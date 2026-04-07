@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { GlassCard } from "../../components/ui/GlassCard";
-import { MetricCard } from "../../components/ui/MetricCard";
+import { GlassCard, MetricCard } from "@finefab/ui";
 import { api } from "../../lib/api";
 import type {
   GetStatsTimeseries200SeriesItem,

@@ -201,7 +201,7 @@ export const api = {
     health: () => request<{ status: string }>("/goose/health"),
     recipes: () =>
       request<{
-        recipes: Array<{ name: string; description: string; steps: number }>;
+        recipes: Array<{ name: string; description: string; steps: number; variables: string[] }>;
       }>("/goose/recipes"),
     createSession: (workingDir = ".") =>
       request<{ session_id: string; working_dir: string }>("/goose/sessions", {
@@ -232,5 +232,16 @@ export const api = {
       request<{ deleted: boolean }>(`/goose/sessions/${id}`, {
         method: "DELETE",
       }),
+    resumeSession: (id: string) =>
+      request<{ session_id: string; resumed: boolean }>(
+        `/goose/sessions/${id}/resume`,
+        { method: "POST" },
+      ),
+    stats: () =>
+      request<{
+        active_sessions: number;
+        total_prompts: number;
+        recipes_available: number;
+      }>("/goose/stats"),
   },
 };

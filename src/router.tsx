@@ -26,6 +26,7 @@ const GPUPanel           = lazy(() => import("./pages/monitoring/GPUPanel").then
 const ContainersMonPanel = lazy(() => import("./pages/monitoring/ContainersPanel").then(m => ({ default: m.ContainersPanel })));
 const ActivepiecesPanel  = lazy(() => import("./pages/monitoring/ActivepiecesPanel").then(m => ({ default: m.ActivepiecesPanel })));
 const SchematicViewer    = lazy(() => import("./pages/schematic/SchematicViewer").then(m => ({ default: m.SchematicViewer })));
+const SchematicProjects  = lazy(() => import("./pages/schematic/SchematicProjects").then(m => ({ default: m.SchematicProjects })));
 const SearchPage         = lazy(() => import("./pages/search/SearchPage").then(m => ({ default: m.SearchPage })));
 const GoosePage          = lazy(() => import("./pages/goose/GoosePage").then((m) => ({ default: m.GoosePage })));
 
@@ -133,9 +134,16 @@ const governanceRoute = createRoute({getParentRoute:()=>rootRoute,path:"/governa
 
 // Schematic / PCB viewer
 function SchematicLayout() {
-  return <Suspense fallback={suspenseFallback}><SchematicViewer /></Suspense>;
+  return (
+    <>
+      <SubTabs tabs={[{ to: "/schematic", label: "Viewer" }, { to: "/schematic/projects", label: "Projects" }]} />
+      <Suspense fallback={suspenseFallback}><Outlet /></Suspense>
+    </>
+  );
 }
-const schematicRoute = createRoute({getParentRoute:()=>rootRoute,path:"/schematic",component:SchematicLayout});
+const schematicLayout   = createRoute({ getParentRoute: () => rootRoute, path: "/schematic", component: SchematicLayout });
+const schematicIndex    = createRoute({ getParentRoute: () => schematicLayout, path: "/", component: SchematicViewer });
+const schematicProjects = createRoute({ getParentRoute: () => schematicLayout, path: "/projects", component: SchematicProjects });
 
 // Goose
 function GooseLayout() {
@@ -174,7 +182,7 @@ const routeTree = rootRoute.addChildren([
   infraLayout.addChildren([infraIndex,infraNetwork,infraStorage]),
   searchRoute,
   governanceRoute,
-  schematicRoute,
+  schematicLayout.addChildren([schematicIndex, schematicProjects]),
   gooseRoute,
   monitoringLayout.addChildren([monitoringIndex,monitoringMachines,monitoringGpu,monitoringContainers,monitoringAutomation]),
 ]);

@@ -429,15 +429,15 @@ describe("api client", () => {
       ok: true,
       json: () =>
         Promise.resolve({
-          embed_server: { status: "up", models: 4, url: "http://ollama:11434" },
-          llm_local: { status: "up", models: 33, url: "http://kxkm-ai:11434" },
+          ollama_local: { status: "up", models: 4, url: "http://ollama:11434" },
+          ollama_gpu: { status: "up", models: 33, url: "http://kxkm-ai:11434" },
           vllm_gpu: { status: "down", error: "timeout" },
           jaeger: { status: "up" },
         }),
     });
 
     const result = await api.infra.network();
-    expect(result.embed_server?.models).toBe(4);
+    expect(result.ollama_local?.models).toBe(4);
     expect(result.vllm_gpu?.status).toBe("down");
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.saillant.cc/infra/network",

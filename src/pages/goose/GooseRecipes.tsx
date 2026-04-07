@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 export function GooseRecipes() {
   const [runningRecipe, setRunningRecipe] = useState<string | null>(null);
   const [results, setResults] = useState<Array<{ step: string; status: string; response?: string; error?: string }>>([]);
+  const [recipeVars, setRecipeVars] = useState<Record<string, string>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ["goose-recipes"],
@@ -13,8 +14,9 @@ export function GooseRecipes() {
   });
 
   const runMutation = useMutation({
-    mutationFn: (name: string) => api.goose.runRecipe(name),
-    onMutate: (name) => { setRunningRecipe(name); setResults([]); },
+    mutationFn: ({ name, variables }: { name: string; variables?: Record<string, string> }) =>
+      api.goose.runRecipe(name, ".", variables),
+    onMutate: ({ name }) => { setRunningRecipe(name); setResults([]); },
     onSuccess: (data) => { setResults(data.results); setRunningRecipe(null); },
     onError: () => { setRunningRecipe(null); },
   });
@@ -32,7 +34,41 @@ export function GooseRecipes() {
               <span className="text-text-dim text-xs">{recipe.steps} steps</span>
             </div>
             <p className="text-text-muted text-xs mb-3">{recipe.description}</p>
-            <button onClick={() => runMutation.mutate(recipe.name)} disabled={runningRecipe !== null} className="w-full px-3 py-1.5 text-xs font-mono rounded border transition-colors disabled:opacity-30 border-accent-green/30 text-accent-green hover:bg-accent-green/10">
+            {recipe.variables && recipe.variables.length > 0 && (
+              <div className="space-y-1 mb-2">
+                {recipe.variables.map((v: string) => (
+                  <input
+                    key={v}
+                    placeholder={v}
+                    value={recipeVars[`${recipe.name}:${v}`] || ""}
+                    onChange={(e) =>
+                      setRecipeVars((prev) => ({
+                        ...prev,
+                        [`${recipe.name}:${v}`]: e.target.value,
+                      }))
+                    }
+                    className="w-full bg-surface-bg text-text-primary border border-border-glass rounded px-2 py-1 text-xs font-mono placeholder:text-text-dim focus:border-accent-green/50 focus:outline-none"
+                  />
+                ))}
+              </div>
+            )}
+            <button
+              onClick={() => {
+                const vars: Record<string, string> = {};
+                if (recipe.variables) {
+                  for (const v of recipe.variables) {
+                    const val = recipeVars[`${recipe.name}:${v}`];
+                    if (val) vars[v] = val;
+                  }
+                }
+                runMutation.mutate({
+                  name: recipe.name,
+                  variables: Object.keys(vars).length > 0 ? vars : undefined,
+                });
+              }}
+              disabled={runningRecipe !== null}
+              className="w-full px-3 py-1.5 text-xs font-mono rounded border transition-colors disabled:opacity-30 border-accent-green/30 text-accent-green hover:bg-accent-green/10"
+            >
               {runningRecipe === recipe.name ? "Running..." : "Run"}
             </button>
           </div>

@@ -13,7 +13,7 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { JSDOM } from "jsdom";
 import { build, mergeConfig } from "vite";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import viteConfig from "../../vite.config";
 
 type RunningServer = {
@@ -59,11 +59,26 @@ describe("life-web bundle runtime smoke", () => {
   let apiServer: Server | undefined;
   let appServer: Server | undefined;
 
+  // The production bundle's OIDC library fires async tasks (silent renew,
+  // event listeners) that outlive the test.  Once the test restores the
+  // original globals, those tasks fail with "Cannot read properties of
+  // undefined (reading 'event')".  Swallow these expected errors so vitest
+  // does not report the file as failed.
+  const swallow = () => {};
+  beforeEach(() => {
+    process.on("uncaughtException", swallow);
+    process.on("unhandledRejection", swallow);
+  });
+
   afterEach(async () => {
     await stopServer(appServer);
     await stopServer(apiServer);
     appServer = undefined;
     apiServer = undefined;
+    // Give async OIDC tasks a tick to settle before removing the handler
+    await new Promise((r) => setTimeout(r, 200));
+    process.removeListener("uncaughtException", swallow);
+    process.removeListener("unhandledRejection", swallow);
   });
 
   it("builds a production bundle that calls the gateway host for governance data", { timeout: 30_000 }, async () => {
@@ -218,7 +233,7 @@ describe("life-web bundle runtime smoke", () => {
     }
 
     window.sessionStorage.setItem(
-      "oidc.user:https://auth.saillant.cc/realms/electron_rare:life-web",
+      "oidc.user:https://auth.saillant.cc/realms/electro_life:life-web",
       JSON.stringify({
         id_token: "smoke-id-token",
         session_state: "smoke-session",

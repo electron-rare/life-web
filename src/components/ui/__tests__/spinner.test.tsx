@@ -5,12 +5,12 @@ import { Spinner } from "@finefab/ui";
 describe("Spinner", () => {
   it("renders default text", () => {
     render(<Spinner />);
-    expect(screen.getByText("Chargement...")).toBeDefined();
+    expect(screen.getByText("Loading...")).toBeDefined();
   });
 
   it("renders custom text", () => {
-    render(<Spinner text="Loading..." />);
-    expect(screen.getByText("Loading...")).toBeDefined();
+    render(<Spinner text="Chargement..." />);
+    expect(screen.getByText("Chargement...")).toBeDefined();
   });
 
   it("renders a spin element", () => {
@@ -21,7 +21,7 @@ describe("Spinner", () => {
 
   it("default text is replaced when prop provided", () => {
     render(<Spinner text="Please wait" />);
-    expect(screen.queryByText("Chargement...")).toBeNull();
+    expect(screen.queryByText("Loading...")).toBeNull();
     expect(screen.getByText("Please wait")).toBeDefined();
   });
 });

@@ -26,14 +26,16 @@ export function DashboardMetrics() {
 
   const series = stats.data?.series ?? EMPTY_SERIES;
   const summary = stats.data?.summary ?? EMPTY_SUMMARY;
+  const cost = (summary as any).cost_usd ?? 0;
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-5 gap-3">
         <MetricCard label="Total calls" value={summary.total_calls ?? 0} color="text-accent-blue" />
         <MetricCard label="P50 latence" value={`${summary.p50_ms ?? 0}ms`} color="text-accent-green" />
         <MetricCard label="P99 latence" value={`${summary.p99_ms ?? 0}ms`} color="text-accent-amber" />
         <MetricCard label="Error rate" value={`${summary.error_rate ?? 0}%`} color={Number(summary.error_rate) > 5 ? "text-accent-red" : "text-accent-green"} />
+        <MetricCard label="Coût LLM (est.)" value={`$${Number(cost).toFixed(2)}`} color="text-accent-amber" />
       </div>
       <GlassCard>
         <p className="mb-2 text-xs uppercase text-text-muted">Latence (ms) — 20 min rolling</p>

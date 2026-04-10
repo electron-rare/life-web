@@ -33,6 +33,7 @@ const ConfigProviders    = lazy(() => import("./pages/config/ConfigProviders").t
 const ConfigPlatform     = lazy(() => import("./pages/config/ConfigPlatform").then(m => ({ default: m.ConfigPlatform })));
 const ConfigPreferences  = lazy(() => import("./pages/config/ConfigPreferences").then(m => ({ default: m.ConfigPreferences })));
 const ProjectsOverview   = lazy(() => import("./pages/projects/ProjectsOverview").then(m => ({ default: m.ProjectsOverview })));
+const DatasheetsPanel    = lazy(() => import("./pages/datasheets/DatasheetsPanel").then((m) => ({ default: m.DatasheetsPanel })));
 
 const suspenseFallback = (
   <div className="flex h-full items-center justify-center">
@@ -179,6 +180,12 @@ function ProjectsLayout() {
 }
 const projectsRoute = createRoute({ getParentRoute: () => rootRoute, path: "/projects", component: ProjectsLayout });
 
+// Datasheets
+function DatasheetsLayout() {
+  return <Suspense fallback={suspenseFallback}><DatasheetsPanel /></Suspense>;
+}
+const datasheetsRoute = createRoute({ getParentRoute: () => rootRoute, path: "/datasheets", component: DatasheetsLayout });
+
 // Monitoring
 function MonitoringLayout() {
   return (
@@ -215,6 +222,7 @@ const routeTree = rootRoute.addChildren([
   gooseRoute,
   configLayout.addChildren([configIndex, configPlatform, configPreferences]),
   monitoringLayout.addChildren([monitoringIndex,monitoringMachines,monitoringGpu,monitoringContainers,monitoringAutomation]),
+  datasheetsRoute,
 ]);
 
 export const router = createRouter({ routeTree });

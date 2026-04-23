@@ -34,6 +34,8 @@ const ConfigPlatform     = lazy(() => import("./pages/config/ConfigPlatform").th
 const ConfigPreferences  = lazy(() => import("./pages/config/ConfigPreferences").then(m => ({ default: m.ConfigPreferences })));
 const ProjectsOverview   = lazy(() => import("./pages/projects/ProjectsOverview").then(m => ({ default: m.ProjectsOverview })));
 const DatasheetsPanel    = lazy(() => import("./pages/datasheets/DatasheetsPanel").then((m) => ({ default: m.DatasheetsPanel })));
+const WorkflowList       = lazy(() => import("./pages/workflow/WorkflowList").then((m) => ({ default: m.WorkflowList })));
+const WorkflowDetail     = lazy(() => import("./pages/workflow/WorkflowDetail").then((m) => ({ default: m.WorkflowDetail })));
 
 const suspenseFallback = (
   <div className="flex h-full items-center justify-center">
@@ -186,6 +188,19 @@ function DatasheetsLayout() {
 }
 const datasheetsRoute = createRoute({ getParentRoute: () => rootRoute, path: "/datasheets", component: DatasheetsLayout });
 
+// Workflow (F4L canonical workflow cockpit — engine.saillant.cc)
+function WorkflowLayout() {
+  return (
+    <>
+      <SubTabs tabs={[{ to: "/workflow", label: "Deliverables" }]} />
+      <Suspense fallback={suspenseFallback}><Outlet /></Suspense>
+    </>
+  );
+}
+const workflowLayout = createRoute({ getParentRoute: () => rootRoute, path: "/workflow", component: WorkflowLayout });
+const workflowIndex  = createRoute({ getParentRoute: () => workflowLayout, path: "/", component: WorkflowList });
+const workflowDetail = createRoute({ getParentRoute: () => workflowLayout, path: "/$slug", component: WorkflowDetail });
+
 // Monitoring
 function MonitoringLayout() {
   return (
@@ -223,6 +238,7 @@ const routeTree = rootRoute.addChildren([
   configLayout.addChildren([configIndex, configPlatform, configPreferences]),
   monitoringLayout.addChildren([monitoringIndex,monitoringMachines,monitoringGpu,monitoringContainers,monitoringAutomation]),
   datasheetsRoute,
+  workflowLayout.addChildren([workflowIndex, workflowDetail]),
 ]);
 
 export const router = createRouter({ routeTree });

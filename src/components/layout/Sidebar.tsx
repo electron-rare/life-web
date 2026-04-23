@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FolderKanban, MessageSquare, Zap, BookOpen, Activity, Server, ShieldCheck, Monitor, CircuitBoard, Search, Terminal, Settings, LogOut, FileText } from "lucide-react";
+import { LayoutDashboard, FolderKanban, MessageSquare, Zap, BookOpen, Activity, Server, ShieldCheck, Monitor, CircuitBoard, Search, Terminal, Settings, LogOut, FileText, Workflow } from "lucide-react";
 import { type ReactNode } from "react";
 import { useAuth } from "../AuthProvider";
 
@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   { to: "/config", icon: <Settings size={20} />, label: "Config" },
   { to: "/goose", icon: <Terminal size={20} />, label: "Goose" },
   { to: "/datasheets", icon: <FileText size={20} />, label: "Datasheets" },
+  { to: "/workflow", icon: <Workflow size={20} />, label: "Workflow" },
 ];
 
 function UserFooter() {

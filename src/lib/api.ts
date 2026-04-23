@@ -19,7 +19,6 @@ import type {
   GetModels200 as GatewayModels,
   GetModelsCatalog200 as GatewayModelCatalog,
   GetApiSearch200 as GatewaySearch,
-  GetApiProviders200 as GatewayProviders,
   GetApiVersion200 as GatewayVersion,
   GetStats200 as GatewayStats,
   GetStatsTimeseries200 as GatewayStatsTimeseries,
@@ -50,6 +49,17 @@ interface HealthIssues {
 }
 
 export type GatewayHealth = GatewayHealthBase & HealthIssues;
+
+export interface ProviderSummary {
+  id: string;
+  name: string;
+  status: "up" | "down";
+  models_count: number;
+}
+
+export interface ProvidersResponse {
+  providers: ProviderSummary[];
+}
 
 function normalizeBaseUrl(value: string | undefined, fallback: string): string {
   const resolved = value?.trim() || fallback;
@@ -157,7 +167,7 @@ export const api = {
   models: () => request<GatewayModels>("/models"),
   modelCatalog: () => request<GatewayModelCatalog>("/models/catalog"),
   version: () => request<GatewayVersion>("/api/version"),
-  providers: () => request<GatewayProviders>("/api/providers"),
+  providers: () => request<ProvidersResponse>("/api/providers"),
   chat: (body: { messages: { role: string; content: string }[]; model?: string; provider?: string; conversation_id?: string }) =>
     request<{ content: string; model: string; provider: string; usage?: ChatUsage; conversation_id?: string; trace_id?: string }>("/api/chat", {
       method: "POST",

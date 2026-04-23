@@ -4,6 +4,7 @@ import { GlassCard } from "@finefab/ui";
 import { CheckCircle, Circle, ExternalLink } from "lucide-react";
 import { useCreateProject } from "../../hooks/useWorkflowProject";
 import { getWorkflowToken } from "../../lib/workflowApi";
+import { TokenChip } from "./TokenChip";
 
 type Step = 0 | 1 | 2 | 3 | 4;
 
@@ -100,11 +101,14 @@ export function ProjectWizard() {
       </Link>
 
       <GlassCard>
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-text-primary">
             Create a new project
           </h2>
-          <Stepper step={step} />
+          <div className="flex items-center gap-3">
+            <Stepper step={step} />
+            <TokenChip />
+          </div>
         </div>
 
         {step === 0 && (

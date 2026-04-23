@@ -24,9 +24,20 @@ export function DashboardOverview() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex items-center gap-2">
-        <StatusDot status={status === "ok" ? "healthy" : "unhealthy"} />
-        <span className="text-sm">{status === "ok" ? "All systems operational" : "Degraded"}</span>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <StatusDot status={status === "ok" ? "healthy" : "unhealthy"} />
+          <span className="text-sm">
+            {status === "ok" ? "All systems operational" : "Degraded"}
+          </span>
+        </div>
+        {status !== "ok" && (health.data?.issues ?? []).length > 0 && (
+          <ul className="text-xs text-accent-red ml-5 list-disc">
+            {(health.data?.issues ?? []).map((i) => (
+              <li key={i}>{i}</li>
+            ))}
+          </ul>
+        )}
       </div>
       <div className="grid grid-cols-3 gap-3">
         <MetricCard label="Services" value="7/7" subtitle="all healthy" color="text-accent-green" />

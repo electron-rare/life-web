@@ -15,7 +15,7 @@ import type {
 const DATASHEET_MCP_URL =
   import.meta.env.VITE_DATASHEET_MCP_URL ?? "http://tower.local:8021/sse";
 import type {
-  GetHealth200 as GatewayHealth,
+  GetHealth200 as GatewayHealthBase,
   GetModels200 as GatewayModels,
   GetModelsCatalog200 as GatewayModelCatalog,
   GetApiSearch200 as GatewaySearch,
@@ -43,6 +43,13 @@ import type {
   GetInfraGpu200 as GatewayInfraGpu,
   GetInfraActivepieces200 as GatewayInfraActivepieces,
 } from "../generated/gateway-types";
+
+interface HealthIssues {
+  issues?: string[];
+  router_status?: Record<string, boolean>;
+}
+
+export type GatewayHealth = GatewayHealthBase & HealthIssues;
 
 function normalizeBaseUrl(value: string | undefined, fallback: string): string {
   const resolved = value?.trim() || fallback;

@@ -1,8 +1,10 @@
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MetricCard, Terminal, StatusDot } from "@finefab/ui";
 import { useHealth } from "../../hooks/useHealth";
 import { useStats } from "../../hooks/useStats";
 import { api } from "../../lib/api";
+import { HealthBanner } from "../../components/HealthBanner";
 
 export function DashboardOverview() {
   const health = useHealth();
@@ -13,9 +15,31 @@ export function DashboardOverview() {
     refetchInterval: 30_000,
     retry: false,
   });
+  const { data: gpu } = useQuery({
+    queryKey: ["infra-gpu"],
+    queryFn: api.monitoring.gpu,
+    refetchInterval: 30_000,
+    retry: false,
+  });
+  const { data: containersData } = useQuery({
+    queryKey: ["infra-containers"],
+    queryFn: api.infra.containers,
+    refetchInterval: 30_000,
+    retry: false,
+  });
+
   const providers = health.data?.providers ?? [];
   const cacheOk = health.data?.cache_available ?? false;
   const status = health.data?.status ?? "unknown";
+
+  const containerStates = React.useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const c of containersData?.containers ?? []) {
+      const k = c.status || 'unknown';
+      map[k] = (map[k] ?? 0) + 1;
+    }
+    return map;
+  }, [containersData]);
 
   const mockLogs = [
     { timestamp: new Date().toLocaleTimeString(), level: "INFO" as const, message: `health status=${status} providers=${providers.length}` },
@@ -26,7 +50,12 @@ export function DashboardOverview() {
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-2">
         <StatusDot status={status === "ok" ? "healthy" : "unhealthy"} />
-        <span className="text-sm">{status === "ok" ? "All systems operational" : "Degraded"}</span>
+        <HealthBanner
+          routerStatus={stats.data?.router?.status ?? {}}
+          gpu={gpu ?? { error: undefined }}
+          containerStates={containerStates}
+          ragVectorCount={stats.data?.chat_service?.rag_stats?.vectors ?? 0}
+        />
       </div>
       <div className="grid grid-cols-3 gap-3">
         <MetricCard label="Services" value="7/7" subtitle="all healthy" color="text-accent-green" />

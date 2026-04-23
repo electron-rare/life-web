@@ -2,25 +2,26 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, FolderKanban, MessageSquare, Zap, BookOpen, Activity, Server, ShieldCheck, Monitor, CircuitBoard, Search, Terminal, Settings, LogOut, FileText, Workflow } from "lucide-react";
 import { type ReactNode } from "react";
 import { useAuth } from "../AuthProvider";
+import { useUIFeatures } from "../../hooks/useUIFeatures";
 
-interface NavItem { to: string; icon: ReactNode; label: string; }
+interface NavItem { to: string; icon: ReactNode; label: string; key: string; }
 
 const navItems: NavItem[] = [
-  { to: "/", icon: <LayoutDashboard size={20} />, label: "Dashboard" },
-  { to: "/projects", icon: <FolderKanban size={20} />, label: "Projects" },
-  { to: "/chat", icon: <MessageSquare size={20} />, label: "Chat" },
-  { to: "/search", icon: <Search size={20} />, label: "Search" },
-  { to: "/providers", icon: <Zap size={20} />, label: "Providers" },
-  { to: "/rag", icon: <BookOpen size={20} />, label: "RAG" },
-  { to: "/traces", icon: <Activity size={20} />, label: "Traces" },
-  { to: "/infra", icon: <Server size={20} />, label: "Infra" },
-  { to: "/governance", icon: <ShieldCheck size={20} />, label: "Governance" },
-  { to: "/monitoring", icon: <Monitor size={20} />, label: "Monitoring" },
-  { to: "/schematic", icon: <CircuitBoard size={20} />, label: "Schematic" },
-  { to: "/config", icon: <Settings size={20} />, label: "Config" },
-  { to: "/goose", icon: <Terminal size={20} />, label: "Goose" },
-  { to: "/datasheets", icon: <FileText size={20} />, label: "Datasheets" },
-  { to: "/workflow", icon: <Workflow size={20} />, label: "Workflow" },
+  { to: "/", icon: <LayoutDashboard size={20} />, label: "Dashboard", key: "dashboard" },
+  { to: "/projects", icon: <FolderKanban size={20} />, label: "Projects", key: "projects" },
+  { to: "/chat", icon: <MessageSquare size={20} />, label: "Chat", key: "chat" },
+  { to: "/search", icon: <Search size={20} />, label: "Search", key: "search" },
+  { to: "/providers", icon: <Zap size={20} />, label: "Providers", key: "providers" },
+  { to: "/rag", icon: <BookOpen size={20} />, label: "RAG", key: "rag" },
+  { to: "/traces", icon: <Activity size={20} />, label: "Traces", key: "traces" },
+  { to: "/infra", icon: <Server size={20} />, label: "Infra", key: "infra" },
+  { to: "/governance", icon: <ShieldCheck size={20} />, label: "Governance", key: "governance" },
+  { to: "/monitoring", icon: <Monitor size={20} />, label: "Monitoring", key: "monitoring" },
+  { to: "/schematic", icon: <CircuitBoard size={20} />, label: "Schematic", key: "schematic" },
+  { to: "/config", icon: <Settings size={20} />, label: "Config", key: "config" },
+  { to: "/goose", icon: <Terminal size={20} />, label: "Goose", key: "goose" },
+  { to: "/datasheets", icon: <FileText size={20} />, label: "Datasheets", key: "datasheets" },
+  { to: "/workflow", icon: <Workflow size={20} />, label: "Workflow", key: "workflow" },
 ];
 
 function UserFooter() {
@@ -40,9 +41,11 @@ function UserFooter() {
 
 export function Sidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { isEnabled } = useUIFeatures();
+  const visible = navItems.filter((item) => isEnabled(item.key));
   return (
     <aside className="flex w-14 flex-col items-center border-r border-border-glass bg-surface-card py-4">
-      {navItems.map((item) => {
+      {visible.map((item) => {
         const isActive = pathname === item.to || (item.to !== "/" && pathname.startsWith(item.to));
         return (
           <Link key={item.to} to={item.to} title={item.label}

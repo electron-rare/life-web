@@ -34,8 +34,9 @@ export interface Deliverable {
   current_state: string;
   compliance_profile: string;
   owner: string;
-  last_transition_at?: string;
-  created_at?: string;
+  /** Epoch seconds (float) per Grist DateTime column. May be null. */
+  last_transition_at?: number | null;
+  created_at?: number | null;
 }
 
 export interface Gate {
@@ -46,9 +47,20 @@ export interface Gate {
   verdict: string;
   reasons?: string;
   decided_by?: string;
-  decided_at?: string;
+  /** Epoch seconds (float) per Grist DateTime column. */
+  decided_at?: number | null;
   attempt?: number;
 }
+
+/** Format a Grist epoch-seconds datetime for display. */
+export const formatGristDate = (v: number | null | undefined): string =>
+  v ? new Date(v * 1000).toLocaleString() : "—";
+
+/** Compare two Grist epoch-seconds timestamps (nullable). Descending order. */
+export const byRecentFirst = (
+  a: number | null | undefined,
+  b: number | null | undefined
+): number => (b ?? 0) - (a ?? 0);
 
 export const workflowApi = {
   engineBase: ENGINE_URL,

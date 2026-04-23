@@ -1,7 +1,11 @@
 import { Link, useParams } from "@tanstack/react-router";
 import { GlassCard } from "@finefab/ui";
 import { useAdvanceGate, useDeliverable } from "../../hooks/useWorkflow";
-import { getWorkflowToken } from "../../lib/workflowApi";
+import {
+  byRecentFirst,
+  formatGristDate,
+  getWorkflowToken,
+} from "../../lib/workflowApi";
 import { StatePill, TypePill } from "./StatePill";
 
 const GATES_BY_TYPE: Record<string, string[]> = {
@@ -65,9 +69,7 @@ export function WorkflowDetail() {
             Last transition
           </dt>
           <dd className="text-text-primary">
-            {deliverable.last_transition_at
-              ? new Date(deliverable.last_transition_at).toLocaleString()
-              : "—"}
+            {formatGristDate(deliverable.last_transition_at)}
           </dd>
         </dl>
       </GlassCard>
@@ -126,9 +128,7 @@ export function WorkflowDetail() {
             </thead>
             <tbody>
               {[...gates]
-                .sort((a, b) =>
-                  (b.decided_at ?? "").localeCompare(a.decided_at ?? "")
-                )
+                .sort((a, b) => byRecentFirst(a.decided_at, b.decided_at))
                 .map((g) => (
                   <tr
                     key={g.gate_id}
@@ -155,9 +155,7 @@ export function WorkflowDetail() {
                       {g.reasons || "—"}
                     </td>
                     <td className="px-2 py-2 text-text-muted">
-                      {g.decided_at
-                        ? new Date(g.decided_at).toLocaleString()
-                        : "—"}
+                      {formatGristDate(g.decided_at)}
                     </td>
                   </tr>
                 ))}

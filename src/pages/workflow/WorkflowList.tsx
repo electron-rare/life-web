@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { GlassCard } from "@finefab/ui";
 import { useDeliverables } from "../../hooks/useWorkflow";
+import { byRecentFirst, formatGristDate } from "../../lib/workflowApi";
 import { StatePill, TypePill } from "./StatePill";
 import { IntakeForm } from "./IntakeForm";
 import { TokenChip } from "./TokenChip";
@@ -64,9 +65,7 @@ export function WorkflowList() {
             <tbody>
               {[...data]
                 .sort((a, b) =>
-                  (b.last_transition_at ?? "").localeCompare(
-                    a.last_transition_at ?? ""
-                  )
+                  byRecentFirst(a.last_transition_at, b.last_transition_at)
                 )
                 .map((d) => (
                   <tr
@@ -93,9 +92,7 @@ export function WorkflowList() {
                       {d.compliance_profile}
                     </td>
                     <td className="px-2 py-2 text-text-muted">
-                      {d.last_transition_at
-                        ? new Date(d.last_transition_at).toLocaleString()
-                        : "—"}
+                      {formatGristDate(d.last_transition_at)}
                     </td>
                   </tr>
                 ))}

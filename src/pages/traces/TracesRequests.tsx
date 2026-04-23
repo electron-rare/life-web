@@ -13,13 +13,45 @@ function parseTraceLevel(trace: GetTracesRecent200DataItem): LogLevel {
 }
 
 function traceToLine(trace: GetTracesRecent200DataItem) {
-  const ts = trace.startTime
-    ? new Date(Number(trace.startTime) / 1000).toISOString().slice(11, 19)
+  // Jaeger returns traces as { traceID, spans: [{ startTime, duration,
+  // operationName, processID, ... }], processes: { pN: { serviceName } } }.
+  // The previous code read startTime/operationName off the trace root
+  // which is undefined in that shape — every line rendered as
+  // "--:--:-- INFO life-core unknown". Pick the root span (lowest
+  // startTime) and resolve its processID against the processes map.
+  const spans =
+    (trace as unknown as { spans?: Array<Record<string, unknown>> }).spans ?? [];
+  const rootSpan = spans.length > 0
+    ? spans.reduce((a, b) =>
+        Number(a.startTime ?? 0) <= Number(b.startTime ?? 0) ? a : b,
+      )
+    : undefined;
+
+  const rawStart = rootSpan?.startTime ?? trace.startTime;
+  const ts = rawStart
+    ? new Date(Number(rawStart) / 1000).toISOString().slice(11, 19)
     : "--:--:--";
-  const op = String(trace.operationName ?? trace.operation ?? "unknown");
-  const duration = trace.duration ? `${Math.round(Number(trace.duration) / 1000)}ms` : "";
-  const firstProcess = trace.processes ? Object.values(trace.processes)[0] : undefined;
+
+  const op = String(
+    rootSpan?.operationName ?? trace.operationName ?? trace.operation ?? "unknown",
+  );
+
+  const rawDuration = rootSpan?.duration ?? trace.duration;
+  const duration = rawDuration
+    ? `${Math.round(Number(rawDuration) / 1000)}ms`
+    : "";
+
+  const processes = (trace as unknown as {
+    processes?: Record<string, { serviceName?: string }>;
+  }).processes;
+  const pid = rootSpan?.processID as string | undefined;
+  const firstProcess = pid && processes
+    ? processes[pid]
+    : processes
+      ? Object.values(processes)[0]
+      : undefined;
   const service = String(firstProcess?.serviceName ?? trace.serviceName ?? "");
+
   return {
     timestamp: ts,
     level: parseTraceLevel(trace),

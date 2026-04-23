@@ -2,20 +2,33 @@ import { useQuery } from "@tanstack/react-query";
 import { MetricCard, Terminal, StatusDot } from "@finefab/ui";
 import { useHealth } from "../../hooks/useHealth";
 import { useStats } from "../../hooks/useStats";
+import { useEventStream } from "../../hooks/useEventStream";
+import { useUIFeatures } from "../../hooks/useUIFeatures";
 import { api } from "../../lib/api";
 
 export function DashboardOverview() {
-  const health = useHealth();
-  const stats = useStats();
-  const { data: gooseStats } = useQuery({
+  const { isEnabled } = useUIFeatures();
+  const sseEnabled = isEnabled("sse");
+  const { snapshot } = useEventStream(sseEnabled);
+
+  const healthHook = useHealth();
+  const statsHook = useStats();
+  const gooseQuery = useQuery({
     queryKey: ["goose-stats"],
     queryFn: api.goose.stats,
-    refetchInterval: 30_000,
+    refetchInterval: sseEnabled ? false : 30_000,
     retry: false,
+    enabled: !sseEnabled,
   });
+
+  const health = sseEnabled ? { data: snapshot?.health } : healthHook;
+  const stats = sseEnabled ? { data: snapshot?.stats } : statsHook;
+  const gooseStats = sseEnabled ? snapshot?.goose : gooseQuery.data;
+
   const providers = health.data?.providers ?? [];
   const cacheOk = health.data?.cache_available ?? false;
   const status = health.data?.status ?? "unknown";
+  const issues = (health.data as { issues?: string[] } | undefined)?.issues ?? [];
 
   const mockLogs = [
     { timestamp: new Date().toLocaleTimeString(), level: "INFO" as const, message: `health status=${status} providers=${providers.length}` },
@@ -31,9 +44,9 @@ export function DashboardOverview() {
             {status === "ok" ? "All systems operational" : "Degraded"}
           </span>
         </div>
-        {status !== "ok" && (health.data?.issues ?? []).length > 0 && (
+        {status !== "ok" && issues.length > 0 && (
           <ul className="text-xs text-accent-red ml-5 list-disc">
-            {(health.data?.issues ?? []).map((i) => (
+            {issues.map((i) => (
               <li key={i}>{i}</li>
             ))}
           </ul>

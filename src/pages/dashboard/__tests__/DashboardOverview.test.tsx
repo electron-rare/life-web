@@ -20,6 +20,14 @@ vi.mock("../../../hooks/useStats", () => ({
   useStats: () => ({ data: null }),
 }));
 
+vi.mock("../../../hooks/useUIFeatures", () => ({
+  useUIFeatures: () => ({ flags: {}, isEnabled: () => false }),
+}));
+
+vi.mock("../../../hooks/useEventStream", () => ({
+  useEventStream: () => ({ snapshot: null, connected: false }),
+}));
+
 vi.mock("../../../lib/api", () => ({
   api: {
     goose: {

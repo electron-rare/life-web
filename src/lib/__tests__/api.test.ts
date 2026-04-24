@@ -270,28 +270,9 @@ describe("api client", () => {
     );
   });
 
-  it("stats returns parsed response", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          chat_service: {
-            requests: 42,
-            cache_hits: 10,
-            cache_stats: {
-              l1: { hits: 4, misses: 2, size: 10, max_size: 1000 },
-              l2: { hits: 6, misses: 3, available: true },
-            },
-            rag_stats: { documents: 26, chunks: 184, vectors: 184, retrieval_mode: "hybrid" },
-          },
-          router: { status: { vllm: true, openai: false } },
-        }),
-    });
-
-    const result = await api.stats();
-    expect(result.chat_service.requests).toBe(42);
-    expect(result.router.status.vllm).toBe(true);
-  });
+  // V1.7 Track II Task 4: api.stats() polling dropped. The unified
+  // SSE /events stream is now the source of truth for cockpit
+  // stats. See src/hooks/useEventStream.ts.
 
   it("statsTimeseries returns parsed response", async () => {
     mockFetch.mockResolvedValueOnce({

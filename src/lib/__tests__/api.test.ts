@@ -323,11 +323,17 @@ describe("api client", () => {
   it("providers returns parsed response", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve({ providers: ["ollama", "openai"] }),
+      json: () =>
+        Promise.resolve({
+          providers: [
+            { id: "litellm", name: "litellm", status: "up", models_count: 54 },
+          ],
+        }),
     });
 
     const result = await api.providers();
-    expect(result.providers).toContain("openai");
+    expect(result.providers[0].id).toBe("litellm");
+    expect(result.providers[0].models_count).toBe(54);
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.saillant.cc/api/providers",
       expect.objectContaining({ credentials: "include" }),

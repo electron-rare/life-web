@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 // Mock fetch for catalog endpoint
@@ -40,5 +40,56 @@ describe("ChatNew", () => {
     render(<ChatNew />);
     expect(await screen.findByRole("textbox")).toBeDefined();
     expect(await screen.findByText("Envoyer")).toBeDefined();
+  });
+});
+
+describe("ChatNew capability filter", () => {
+  it("hides embedding models from the dropdown", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      json: async () => ({
+        models: [
+          { id: "openai/gpt-4o", name: "GPT-4o", capability: "chat" },
+          {
+            id: "openai/nomic-embed-text",
+            name: "Nomic Embed Text",
+            capability: "embedding",
+          },
+          {
+            id: "anthropic/claude-sonnet-4-20250514",
+            name: "Claude Sonnet 4",
+            capability: "chat",
+          },
+        ],
+      }),
+      body: null,
+      ok: true,
+    } as unknown as Response);
+
+    const { ChatNew } = await import("../ChatNew");
+    render(<ChatNew />);
+
+    await waitFor(() => {
+      expect(screen.getByText("GPT-4o")).toBeDefined();
+      expect(screen.getByText("Claude Sonnet 4")).toBeDefined();
+      expect(screen.queryByText("Nomic Embed Text")).toBeNull();
+    });
+  });
+
+  it("treats missing capability as chat (backward compat)", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      json: async () => ({
+        models: [
+          { id: "openai/gpt-4o", name: "GPT-4o" },
+        ],
+      }),
+      body: null,
+      ok: true,
+    } as unknown as Response);
+
+    const { ChatNew } = await import("../ChatNew");
+    render(<ChatNew />);
+    await waitFor(() => {
+      expect(screen.getByText("GPT-4o")).toBeDefined();
+    });
   });
 });

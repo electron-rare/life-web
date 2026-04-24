@@ -4,6 +4,10 @@ import { useChatStream, type Message } from "../../hooks/useChatStream";
 import { api } from "../../lib/api";
 import type { GetModelsCatalog200ModelsItem } from "../../generated/gateway-types";
 
+type CatalogEntry = GetModelsCatalog200ModelsItem & {
+  capability?: "chat" | "embedding" | "vision";
+};
+
 const API = (import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3210").replace(/\/$/, "");
 const DEFAULT_MODEL = API.includes("localhost") || API.includes("127.0.0.1")
   ? "qwen3:4b"
@@ -36,7 +40,7 @@ export function ChatNew() {
   const [model, setModel] = useState(DEFAULT_MODEL);
   const [useRag, setUseRag] = useState(false);
   const [input, setInput] = useState("");
-  const [catalog, setCatalog] = useState<GetModelsCatalog200ModelsItem[]>([]);
+  const [catalog, setCatalog] = useState<CatalogEntry[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [activeId, setActiveId] = useState<string>(() => crypto.randomUUID());
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -115,8 +119,6 @@ export function ChatNew() {
     setMessages(s.messages);
   };
 
-  const hasSelectedModel = catalog.some((entry) => entry.id === model);
-
   return (
     <div className="flex h-full">
       {/* Sidebar */}
@@ -151,20 +153,25 @@ export function ChatNew() {
             onChange={(e) => setModel(e.target.value)}
             className="rounded-lg border border-border-glass bg-surface-card px-3 py-1.5 text-xs text-text-primary"
           >
-            {catalog.length === 0 ? (
-              <option value={DEFAULT_MODEL}>{DEFAULT_MODEL}</option>
-            ) : (
-              <>
-                {!hasSelectedModel && (
-                  <option value={model}>{model}</option>
-                )}
-                {catalog.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
-                  </option>
-                ))}
-              </>
-            )}
+            {(() => {
+              const chatModels = catalog.filter(
+                (m) => (m.capability ?? "chat") === "chat",
+              );
+              if (chatModels.length === 0) {
+                return <option value={DEFAULT_MODEL}>{DEFAULT_MODEL}</option>;
+              }
+              const hasSelected = chatModels.some((m) => m.id === model);
+              return (
+                <>
+                  {!hasSelected && <option value={model}>{model}</option>}
+                  {chatModels.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name}
+                    </option>
+                  ))}
+                </>
+              );
+            })()}
           </select>
           <label className="flex items-center gap-1.5 text-xs cursor-pointer text-text-muted hover:text-text-primary">
             <input

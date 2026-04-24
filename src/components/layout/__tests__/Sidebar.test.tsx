@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { useUIFeatures } from "../../../hooks/useUIFeatures";
 
 // Mock @tanstack/react-router — Sidebar uses useRouterState and Link
 vi.mock("@tanstack/react-router", () => ({
@@ -20,6 +21,11 @@ vi.mock("../../AuthProvider", () => ({
     user: { profile: { preferred_username: "electron", email: "e@test.com" } },
     logout: vi.fn(),
   })),
+}));
+
+// Mock useUIFeatures — default: everything enabled (no filter)
+vi.mock("../../../hooks/useUIFeatures", () => ({
+  useUIFeatures: vi.fn(() => ({ flags: {}, isEnabled: () => true })),
 }));
 
 describe("Sidebar", () => {
@@ -68,5 +74,32 @@ describe("Sidebar", () => {
     render(<Sidebar />);
     const logoutBtn = screen.getByTitle(/déconnexion/i);
     expect(logoutBtn).toBeDefined();
+  });
+});
+
+describe("Sidebar feature-flag filtering", () => {
+  it("hides entries whose flag is false", async () => {
+    (useUIFeatures as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      flags: { governance: false, datasheets: false },
+      isEnabled: (k: string) => !["governance", "datasheets"].includes(k),
+    });
+    const { Sidebar } = await import("../Sidebar");
+    render(<Sidebar />);
+    expect(screen.queryByTitle("Governance")).toBeNull();
+    expect(screen.queryByTitle("Datasheets")).toBeNull();
+    expect(screen.queryByTitle("Chat")).not.toBeNull();
+    cleanup();
+  });
+
+  it("shows all entries when flags unknown (default true)", async () => {
+    (useUIFeatures as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      flags: {},
+      isEnabled: () => true,
+    });
+    const { Sidebar } = await import("../Sidebar");
+    render(<Sidebar />);
+    expect(screen.queryByTitle("Governance")).not.toBeNull();
+    expect(screen.queryByTitle("Chat")).not.toBeNull();
+    cleanup();
   });
 });

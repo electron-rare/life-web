@@ -3,7 +3,7 @@ import { GPUPanel } from "./GPUPanel";
 import { ContainersPanel } from "./ContainersPanel";
 import { ActivepiecesPanel } from "./ActivepiecesPanel";
 import { AlertsBanner } from "./AlertsBanner";
-import { InfraNetwork } from "../infra/InfraNetwork";
+import { InfraHostsPanel } from "./InfraHostsPanel";
 
 export function MonitoringOverview() {
   return (
@@ -15,7 +15,7 @@ export function MonitoringOverview() {
         <ContainersPanel />
         <ActivepiecesPanel />
         <div className="md:col-span-2">
-          <InfraNetwork />
+          <InfraHostsPanel />
         </div>
       </div>
     </div>

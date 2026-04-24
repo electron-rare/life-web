@@ -3,25 +3,30 @@ import { api } from "../../lib/api";
 import { GlassCard, StatusDot } from "@finefab/ui";
 
 export function ProvidersStatus() {
-  const health = useQuery({ queryKey: ["health"], queryFn: api.health, refetchInterval: 10_000 });
-  const models = useQuery({ queryKey: ["models"], queryFn: api.models, refetchInterval: 30_000 });
+  const providersQuery = useQuery({
+    queryKey: ["providers"],
+    queryFn: api.providers,
+    refetchInterval: 15_000,
+  });
 
-  const providers = health.data?.providers ?? [];
+  const providers = providersQuery.data?.providers ?? [];
 
   return (
     <div className="grid grid-cols-2 gap-3 p-4 lg:grid-cols-3">
       {providers.map((p) => (
-        <GlassCard key={p}>
+        <GlassCard key={p.id}>
           <div className="flex items-center gap-2">
-            <StatusDot status="healthy" />
-            <h3 className="text-sm font-medium">{p}</h3>
+            <StatusDot status={p.status === "up" ? "healthy" : "unhealthy"} />
+            <h3 className="text-sm font-medium">{p.name}</h3>
           </div>
           <p className="mt-2 text-xs text-text-muted">
-            Models: {models.data?.models?.filter((m: string) => m.toLowerCase().includes(p.split("-")[0])).length ?? "..."}
+            Models: {p.models_count}
           </p>
         </GlassCard>
       ))}
-      {providers.length === 0 && <p className="text-text-muted col-span-full">Aucun provider actif</p>}
+      {providers.length === 0 && (
+        <p className="text-text-muted col-span-full">Aucun provider actif</p>
+      )}
     </div>
   );
 }

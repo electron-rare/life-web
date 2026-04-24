@@ -8,6 +8,73 @@ import {
 } from "../../lib/workflowApi";
 import { StatePill, TypePill } from "./StatePill";
 import { ArtifactsPanel } from "./ArtifactsPanel";
+import {
+  useAgentDecide,
+  useAgentRun,
+  useTraceabilityGraph,
+} from "../../hooks/useAgentRun";
+import { InnerStateIndicator } from "../../components/InnerStateIndicator";
+import { AgentActionButtons } from "../../components/AgentActionButtons";
+import { TimeInLoopTimer } from "../../components/TimeInLoopTimer";
+
+function InnerPanel({
+  role,
+  agentRunId,
+}: {
+  role: string;
+  agentRunId: string;
+}) {
+  const { data, isLoading, error } = useAgentRun(agentRunId);
+  const decide = useAgentDecide(role, agentRunId);
+
+  if (isLoading) {
+    return (
+      <GlassCard>
+        <p className="text-sm text-text-muted">Loading agent run…</p>
+      </GlassCard>
+    );
+  }
+  if (error) {
+    return (
+      <GlassCard>
+        <p className="text-sm text-accent-red">
+          Agent run error: {(error as Error).message}
+        </p>
+      </GlassCard>
+    );
+  }
+  if (!data) return null;
+
+  return (
+    <GlassCard>
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <h3 className="text-sm font-semibold text-text-primary">
+          Agent inner loop — {role}
+        </h3>
+        <InnerStateIndicator state={data.inner_state} />
+        <TimeInLoopTimer startedAt={data.updated_at} />
+        <span className="ml-auto text-xs text-text-muted">
+          iter {data.iterations}
+        </span>
+      </div>
+      {decide.isError && (
+        <p className="mb-2 text-sm text-accent-red">
+          {(decide.error as Error).message}
+        </p>
+      )}
+      <AgentActionButtons
+        state={data.inner_state}
+        disabled={decide.isPending}
+        onDecide={(d) => decide.mutate(d)}
+      />
+      {data.notes && (
+        <p className="mt-3 whitespace-pre-wrap rounded border border-border-glass bg-surface-bg p-2 text-xs text-text-muted">
+          {data.notes}
+        </p>
+      )}
+    </GlassCard>
+  );
+}
 
 const GATES_BY_TYPE: Record<string, string[]> = {
   A: ["G-spec", "G-impl", "G-ship"],
@@ -19,6 +86,9 @@ export function WorkflowDetail() {
   const slug = (params as { slug?: string }).slug ?? "";
   const { data, isLoading, error } = useDeliverable(slug);
   const advance = useAdvanceGate(slug);
+  const { data: graph } = useTraceabilityGraph(slug);
+  const activeAgentRun = graph?.runs?.[0];
+  const { data: activeRunDetail } = useAgentRun(activeAgentRun?.id);
 
   if (isLoading) return <p className="p-4 text-text-muted">Loading {slug}…</p>;
   if (error)
@@ -110,7 +180,28 @@ export function WorkflowDetail() {
         </div>
       </GlassCard>
 
-      <ArtifactsPanel slug={deliverable.slug} />
+      {deliverable.current_state === "impl" && activeAgentRun && (
+        <InnerPanel
+          role={activeAgentRun.role}
+          agentRunId={activeAgentRun.id}
+        />
+      )}
+
+      <div className="flex justify-end">
+        <Link
+          to="/workflow/$slug/evaluations"
+          params={{ slug: deliverable.slug }}
+          className="text-xs text-accent-green hover:underline"
+        >
+          View evaluations →
+        </Link>
+      </div>
+
+      <ArtifactsPanel
+        slug={deliverable.slug}
+        llmArtifact={activeRunDetail?.artifact_llm ?? null}
+        goldArtifact={activeRunDetail?.artifact_gold ?? null}
+      />
 
       <GlassCard>
         <h3 className="mb-3 text-sm font-semibold text-text-primary">

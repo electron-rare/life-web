@@ -4,6 +4,7 @@ import { ContainersPanel } from "./ContainersPanel";
 import { ActivepiecesPanel } from "./ActivepiecesPanel";
 import { AlertsBanner } from "./AlertsBanner";
 import { InfraHostsPanel } from "./InfraHostsPanel";
+import { InnerTracesPanel } from "../../components/traces/InnerTracesPanel";
 
 export function MonitoringOverview() {
   return (
@@ -17,6 +18,13 @@ export function MonitoringOverview() {
         <div className="md:col-span-2">
           <InfraHostsPanel />
         </div>
+        <section
+          aria-labelledby="inner-traces-heading"
+          className="md:col-span-2"
+        >
+          <h2 id="inner-traces-heading">Inner traces</h2>
+          <InnerTracesPanel apiBase="/api" />
+        </section>
       </div>
     </div>
   );

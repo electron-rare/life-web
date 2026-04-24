@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 
 // Test that hooks exist and export the right functions
 describe("hooks exports", () => {
@@ -7,10 +7,8 @@ describe("hooks exports", () => {
     expect(typeof mod.useHealth).toBe("function");
   });
 
-  it("useStats exports correctly", async () => {
-    const mod = await import("../../hooks/useStats");
-    expect(typeof mod.useStats).toBe("function");
-  });
+  // V1.7 Track II Task 4: useStats is gone. The SSE replacement is
+  // covered by tests for useEventStream / useSSE.
 
   it("useConversations exports correctly", async () => {
     const mod = await import("../../hooks/useConversations");

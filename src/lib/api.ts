@@ -20,7 +20,6 @@ import type {
   GetModelsCatalog200 as GatewayModelCatalog,
   GetApiSearch200 as GatewaySearch,
   GetApiVersion200 as GatewayVersion,
-  GetStats200 as GatewayStats,
   GetStatsTimeseries200 as GatewayStatsTimeseries,
   GetLogsRecent200 as GatewayLogsRecent,
   GetRagStats200 as GatewayRagStats,
@@ -163,7 +162,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   health: () => request<GatewayHealth>("/health"),
-  stats: () => request<GatewayStats>("/stats"),
+  // V1.7 Track II Task 4: `/stats` polling dropped — consume the
+  // unified SSE /events snapshot instead (see useEventStream).
   models: () => request<GatewayModels>("/models"),
   modelCatalog: () => request<GatewayModelCatalog>("/models/catalog"),
   version: () => request<GatewayVersion>("/api/version"),
@@ -406,11 +406,7 @@ export const api = {
         `/goose/sessions/${id}/resume`,
         { method: "POST" },
       ),
-    stats: () =>
-      request<{
-        active_sessions: number;
-        total_prompts: number;
-        recipes_available: number;
-      }>("/goose/stats"),
+    // V1.7 Track II Task 4: goose.stats polling dropped — the
+    // unified SSE /events stream carries goose counters.
   },
 };

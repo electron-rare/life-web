@@ -1,34 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
 import { MetricCard, Terminal, StatusDot } from "@finefab/ui";
-import { useHealth } from "../../hooks/useHealth";
-import { useStats } from "../../hooks/useStats";
 import { useEventStream } from "../../hooks/useEventStream";
-import { useUIFeatures } from "../../hooks/useUIFeatures";
-import { api } from "../../lib/api";
 
 export function DashboardOverview() {
-  const { isEnabled } = useUIFeatures();
-  const sseEnabled = isEnabled("sse");
-  const { snapshot } = useEventStream(sseEnabled);
+  // V1.7 Track II Task 4: /stats and /goose/stats polling routes
+  // are gone. The unified SSE /events stream is now the only source
+  // of cockpit truth for health + stats + goose.
+  const { snapshot } = useEventStream(true);
 
-  const healthHook = useHealth();
-  const statsHook = useStats();
-  const gooseQuery = useQuery({
-    queryKey: ["goose-stats"],
-    queryFn: api.goose.stats,
-    refetchInterval: sseEnabled ? false : 30_000,
-    retry: false,
-    enabled: !sseEnabled,
-  });
+  const health = snapshot?.health;
+  const stats = snapshot?.stats;
+  const gooseStats = snapshot?.goose;
 
-  const health = sseEnabled ? { data: snapshot?.health } : healthHook;
-  const stats = sseEnabled ? { data: snapshot?.stats } : statsHook;
-  const gooseStats = sseEnabled ? snapshot?.goose : gooseQuery.data;
-
-  const providers = health.data?.providers ?? [];
-  const cacheOk = health.data?.cache_available ?? false;
-  const status = health.data?.status ?? "unknown";
-  const issues = (health.data as { issues?: string[] } | undefined)?.issues ?? [];
+  const providers = health?.providers ?? [];
+  const cacheOk = health?.cache_available ?? false;
+  const status = health?.status ?? "unknown";
+  const issues = (health as { issues?: string[] } | undefined)?.issues ?? [];
 
   const mockLogs = [
     { timestamp: new Date().toLocaleTimeString(), level: "INFO" as const, message: `health status=${status} providers=${providers.length}` },
@@ -60,7 +46,7 @@ export function DashboardOverview() {
         <MetricCard label="Goose Prompts" value={gooseStats?.total_prompts ?? 0} color="text-accent-blue" />
       </div>
       <Terminal title="$ tail -f life-core.log" lines={mockLogs} className="flex-1" />
-      {stats.data && <pre className="terminal-box text-[10px] text-text-dim">{JSON.stringify(stats.data, null, 2)}</pre>}
+      {stats && <pre className="terminal-box text-[10px] text-text-dim">{JSON.stringify(stats, null, 2)}</pre>}
     </div>
   );
 }

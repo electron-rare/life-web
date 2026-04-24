@@ -37,6 +37,7 @@ const DatasheetsPanel    = lazy(() => import("./pages/datasheets/DatasheetsPanel
 const WorkflowList       = lazy(() => import("./pages/workflow/WorkflowList").then((m) => ({ default: m.WorkflowList })));
 const WorkflowDetail     = lazy(() => import("./pages/workflow/WorkflowDetail").then((m) => ({ default: m.WorkflowDetail })));
 const ProjectWizard      = lazy(() => import("./pages/workflow/ProjectWizard").then((m) => ({ default: m.ProjectWizard })));
+const EvaluationDashboard = lazy(() => import("./pages/EvaluationDashboard").then((m) => ({ default: m.EvaluationDashboard })));
 
 const suspenseFallback = (
   <div className="flex h-full items-center justify-center">
@@ -205,6 +206,7 @@ const workflowLayout = createRoute({ getParentRoute: () => rootRoute, path: "/wo
 const workflowIndex  = createRoute({ getParentRoute: () => workflowLayout, path: "/", component: WorkflowList });
 const workflowNew    = createRoute({ getParentRoute: () => workflowLayout, path: "/new", component: ProjectWizard });
 const workflowDetail = createRoute({ getParentRoute: () => workflowLayout, path: "/$slug", component: WorkflowDetail });
+const workflowEvaluations = createRoute({ getParentRoute: () => workflowLayout, path: "/$slug/evaluations", component: EvaluationDashboard });
 
 // Monitoring
 function MonitoringLayout() {
@@ -243,7 +245,7 @@ const routeTree = rootRoute.addChildren([
   configLayout.addChildren([configIndex, configPlatform, configPreferences]),
   monitoringLayout.addChildren([monitoringIndex,monitoringMachines,monitoringGpu,monitoringContainers,monitoringAutomation]),
   datasheetsRoute,
-  workflowLayout.addChildren([workflowIndex, workflowNew, workflowDetail]),
+  workflowLayout.addChildren([workflowIndex, workflowNew, workflowDetail, workflowEvaluations]),
 ]);
 
 export const router = createRouter({ routeTree });

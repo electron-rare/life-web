@@ -87,3 +87,18 @@ Vitest + jsdom + Testing Library. Les tests sont colocalisés dans des dossiers 
 ## Docker
 
 Build multi-stage : pnpm install + build → nginx:alpine servant `dist/`. Le `VITE_API_URL` est défini au build via Docker build arg.
+
+### Sprint 1 additions (2026-04-24)
+
+- `components/InnerStateIndicator` / `AgentActionButtons` / `TimeInLoopTimer`
+  compose into `pages/WorkflowDetail.tsx` via `InnerPanel` during `impl`.
+  Panel fetches agent run state via `hooks/useAgentRun.ts` with 3s refetch
+  while `inner_state === "REVIEW"`.
+- `components/DiffOverlay` provides line-by-line comparison; used by
+  `ArtifactsPanel` (`src/pages/workflow/ArtifactsPanel.tsx`) LLM/gold/diff toggle.
+- `pages/EvaluationDashboard.tsx` (route `/workflow/$slug/evaluations`)
+  renders `QualityRadar` (4 comparators) + `QualityTimeline` from
+  life-core `/evaluations?deliverable_slug=...`.
+
+API clients: `api/agentsApi.ts`, `api/evaluationsApi.ts` (Bearer auth
+remains via existing session).

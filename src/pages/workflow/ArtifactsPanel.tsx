@@ -8,9 +8,16 @@ import {
   type ArtifactFile,
 } from "../../lib/workflowApi";
 import { ArtifactViewer } from "./viewers";
+import { DiffOverlay } from "../../components/DiffOverlay";
+
+type ArtifactView = "llm" | "gold" | "diff";
 
 interface Props {
   slug: string;
+  /** Raw LLM-generated artifact text (Sprint 1: optional). */
+  llmArtifact?: string | null;
+  /** Gold-standard artifact text (Sprint 1: optional). */
+  goldArtifact?: string | null;
 }
 
 function iconFor(path: string) {
@@ -57,9 +64,16 @@ function fmtSize(n: number): string {
   return `${(n / 1024 / 1024).toFixed(1)} MB`;
 }
 
-export function ArtifactsPanel({ slug }: Props) {
+export function ArtifactsPanel({
+  slug,
+  llmArtifact,
+  goldArtifact,
+}: Props) {
   const { data, isLoading, error } = useWorkflowArtifacts(slug);
   const [selected, setSelected] = useState<ArtifactFile | null>(null);
+  const [view, setView] = useState<ArtifactView>("llm");
+
+  const hasSprint1Artifacts = Boolean(llmArtifact || goldArtifact);
 
   return (
     <GlassCard>
@@ -81,6 +95,51 @@ export function ArtifactsPanel({ slug }: Props) {
           </div>
         )}
       </div>
+
+      {hasSprint1Artifacts && (
+        <div className="mb-3 space-y-2">
+          <div
+            role="tablist"
+            aria-label="Artifact view"
+            data-testid="artifact-toggle"
+            className="inline-flex rounded-lg border border-border-glass bg-surface-bg p-0.5"
+          >
+            {(["llm", "gold", "diff"] as ArtifactView[]).map((v) => (
+              <button
+                key={v}
+                role="tab"
+                aria-selected={view === v}
+                onClick={() => setView(v)}
+                className={`rounded px-3 py-1 text-xs font-mono uppercase tracking-wider transition-colors ${
+                  view === v
+                    ? "bg-accent-green/20 text-accent-green"
+                    : "text-text-muted hover:bg-surface-hover"
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+          <div className="rounded border border-border-glass bg-surface-bg p-3">
+            {view === "llm" && (
+              <pre className="overflow-auto whitespace-pre-wrap break-words font-mono text-xs text-text-primary">
+                {llmArtifact ?? "(no LLM artifact)"}
+              </pre>
+            )}
+            {view === "gold" && (
+              <pre className="overflow-auto whitespace-pre-wrap break-words font-mono text-xs text-text-primary">
+                {goldArtifact ?? "(no gold artifact)"}
+              </pre>
+            )}
+            {view === "diff" && (
+              <DiffOverlay
+                llm={llmArtifact ?? ""}
+                gold={goldArtifact ?? ""}
+              />
+            )}
+          </div>
+        </div>
+      )}
 
       {isLoading && <p className="text-text-muted text-sm">Loading…</p>}
       {error && (

@@ -32,7 +32,7 @@ export function AppShell() {
   return (
     <div className="flex h-screen bg-surface-bg text-text-primary">
       <Sidebar />
-      <main className="flex flex-1 flex-col overflow-hidden">
+      <main className="flex flex-1 flex-col overflow-y-auto">
         <Outlet />
       </main>
     </div>
